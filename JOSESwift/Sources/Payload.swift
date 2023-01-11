@@ -23,14 +23,14 @@
 
 import Foundation
 
-public struct Payload: DataConvertible {
+struct Payload: DataConvertible {
     let payload: Data
 
-    public init(_ payload: Data) {
+    init(_ payload: Data) {
         self.payload = payload
     }
 
-    public func data() -> Data {
+    func data() -> Data {
         return payload
     }
 

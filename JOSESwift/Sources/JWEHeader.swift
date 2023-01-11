@@ -24,7 +24,7 @@
 import Foundation
 
 /// The header of a `JWE` object.
-public struct JWEHeader: JOSEHeader {
+struct JWEHeader: JOSEHeader {
     var headerData: Data
     var parameters: [String: Any] {
         didSet {
@@ -64,7 +64,7 @@ public struct JWEHeader: JOSEHeader {
     }
 
     /// Initializes a `JWEHeader` with the specified algorithm and signing algorithm.
-    public init(
+    init(
         keyManagementAlgorithm: KeyManagementAlgorithm,
         contentEncryptionAlgorithm: ContentEncryptionAlgorithm
     ) {
@@ -83,14 +83,14 @@ public struct JWEHeader: JOSEHeader {
     }
 
     /// Initializes a `JWEHeader` with the specified parameters.
-    public init(parameters: [String: Any]) throws {
+    init(parameters: [String: Any]) throws {
         let headerData = try JSONSerialization.data(withJSONObject: parameters, options: [])
         try self.init(parameters: parameters, headerData: headerData)
     }
 }
 
 // Header parameters that are specific to a JWE Header.
-public extension JWEHeader {
+extension JWEHeader {
     /// The algorithm used to encrypt or determine the value of the Content Encryption Key.
     var keyManagementAlgorithm: KeyManagementAlgorithm? {
         // Forced cast is ok here since we checked both that "alg" exists
@@ -132,7 +132,7 @@ public extension JWEHeader {
 extension JWEHeader: CommonHeaderParameterSpace {
     /// The JWK Set URL which refers to a resource for a set of JSON-encoded public keys,
     /// one of which corresponds to the key used to encrypt the JWE.
-    public var jku: URL? {
+    var jku: URL? {
         get {
             guard let parameter = parameters["jku"] as? String else {
                 return nil
@@ -145,7 +145,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
     }
 
     /// The JSON Web key corresponding to the key used to encrypt the JWE, as a String.
-    public var jwk: String? {
+    var jwk: String? {
         get {
             return parameters["jwk"] as? String
         }
@@ -155,7 +155,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
     }
 
     /// The JSON Web key corresponding to the key used to encrypt the JWE, as a JWK.
-    public var jwkTyped: JWK? {
+    var jwkTyped: JWK? {
         get {
             guard let jwkParameters = parameters["jwk"] as? [String: String] else {
                 return nil
@@ -187,7 +187,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
     }
 
     /// The Key ID indicates the key which was used to encrypt the JWE.
-    public var kid: String? {
+    var kid: String? {
         get {
             return parameters["kid"] as? String
         }
@@ -198,7 +198,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
 
     /// The X.509 URL that referes to a resource for the X.509 public key certificate
     /// or certificate chain corresponding to the key used to encrypt the JWE.
-    public var x5u: URL? {
+    var x5u: URL? {
         get {
             guard let parameter = parameters["x5u"] as? String else {
                 return nil
@@ -212,7 +212,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
 
     /// The X.509 certificate chain contains the X.509 public key certificate or
     /// certificate chain corresponding to the key used to encrypt the JWE.
-    public var x5c: [String]? {
+    var x5c: [String]? {
         get {
             return parameters["x5c"] as? [String]
         }
@@ -223,7 +223,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
 
     /// The X.509 certificate SHA-1 thumbprint of the DER encoding of the X.509 certificate
     /// corresponding to the key used to encrypt the JWE.
-    public var x5t: String? {
+    var x5t: String? {
         get {
             return parameters["x5t"] as? String
         }
@@ -234,7 +234,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
 
     /// The X.509 certificate SHA-256 thumbprint of the DER encoding of the X.509 certificate
     /// corresponding to the key used to encrypt the JWE.
-    public var x5tS256: String? {
+    var x5tS256: String? {
         get {
             return parameters["x5tS256"] as? String
         }
@@ -244,7 +244,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
     }
 
     /// The type to declare the media type of the JWE object.
-    public var typ: String? {
+    var typ: String? {
         get {
             return parameters["typ"] as? String
         }
@@ -254,7 +254,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
     }
 
     /// The content type to declare the media type of the secured content (payload).
-    public var cty: String? {
+    var cty: String? {
         get {
             return parameters["cty"] as? String
         }
@@ -264,7 +264,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
     }
 
     /// The critical header parameter indicates the header parameter extensions.
-    public var crit: [String]? {
+    var crit: [String]? {
         get {
             return parameters["crit"] as? [String]
         }
@@ -276,7 +276,7 @@ extension JWEHeader: CommonHeaderParameterSpace {
 
 // MARK: - Deprecated API
 
-public extension JWEHeader {
+extension JWEHeader {
     /// The algorithm used to encrypt or determine the value of the Content Encryption Key.
     @available(*, deprecated, message: "Use `JWEHeader.keyManagementAlgorithm` instead")
     var algorithm: AsymmetricKeyAlgorithm? {

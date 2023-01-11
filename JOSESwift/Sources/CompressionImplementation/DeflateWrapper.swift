@@ -34,7 +34,7 @@ struct DeflateCompressor: CompressorProtocol {
     /// Compresses the data using the zlib deflate algorithm.
     /// - returns: raw deflated data according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
     /// - note: Fixed at compression level 5 (best trade off between speed and time)
-    public func compress(data: Data) throws -> Data {
+    func compress(data: Data) throws -> Data {
         guard data.count > 0 else {
             throw JOSESwiftError.rawDataMustBeGreaterThanZero
         }
@@ -55,7 +55,7 @@ struct DeflateCompressor: CompressorProtocol {
     /// Decompresses the data using the zlib deflate algorithm. Self is expected to be a raw deflate
     /// stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
     /// - returns: uncompressed data
-    public func decompress(data: Data) throws -> Data {
+    func decompress(data: Data) throws -> Data {
         guard data.count > 0 else {
             throw JOSESwiftError.compressedDataMustBeGreaterThanZero
         }

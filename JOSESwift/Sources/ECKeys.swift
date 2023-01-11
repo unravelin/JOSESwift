@@ -31,7 +31,7 @@ import Foundation
 /// - Note:
 /// To ensure proper JWK JSON encoding, the component data must refer to the unsigned big-endian octet representation
 /// of the component's values, encoded using the minimum amount of octets needed to represent the value.
-public typealias ECPublicKeyComponents = (
+typealias ECPublicKeyComponents = (
         crv: String,
         x: Data,
         y: Data
@@ -43,7 +43,7 @@ public typealias ECPublicKeyComponents = (
 /// - Note:
 /// To ensure proper JWK JSON encoding, the component data must refer to the unsigned big-endian octet representation
 /// of the component's values, encoded using the minimum amount of octets needed to represent the value.
-public typealias ECPrivateKeyComponents = (
+typealias ECPrivateKeyComponents = (
         crv: String,
         x: Data,
         y: Data,
@@ -53,7 +53,7 @@ public typealias ECPrivateKeyComponents = (
 /// A type that represents an EC public key.
 /// It can be expressed through `ECPublicKeyComponents` meaning it can be converted to such components
 /// and it can be created from such components.
-public protocol ExpressibleAsECPublicKeyComponents {
+protocol ExpressibleAsECPublicKeyComponents {
 
     /// Creates an object that contains the supplied components in the format specified by ANSI X9.63
     ///
@@ -72,7 +72,7 @@ public protocol ExpressibleAsECPublicKeyComponents {
 /// A type that represents an EC private key.
 /// It can be expressed through `ECPrivateKeyComponents` meaning it can be converted to such components
 /// and it can be created from such components.
-public protocol ExpressibleAsECPrivateKeyComponents {
+protocol ExpressibleAsECPrivateKeyComponents {
 
     /// Creates an object that contains the supplied components in the format specified by ANSI X9.63
     ///
@@ -91,15 +91,15 @@ public protocol ExpressibleAsECPrivateKeyComponents {
 // MARK: Public Key
 
 /// A JWK holding an EC public key.
-public struct ECPublicKey: JWK {
+struct ECPublicKey: JWK {
     /// The JWK key type.
-    public let keyType: JWKKeyType
+    let keyType: JWKKeyType
 
     /// The JWK parameters.
-    public let parameters: [String: String]
+    let parameters: [String: String]
 
     /// The EC public key required parameters
-    public var requiredParameters: [String: String] {
+    var requiredParameters: [String: String] {
         [
             JWKParameter.keyType.rawValue: self.keyType.rawValue,
             ECParameter.curve.rawValue: self.crv.rawValue,
@@ -109,13 +109,13 @@ public struct ECPublicKey: JWK {
     }
 
     /// The curve value for the EC public key.
-    public let crv: ECCurveType
+    let crv: ECCurveType
 
     /// The x coordinate value for the EC public key.
-    public let x: String
+    let x: String
 
     /// The y coordinate value for the EC public key.
-    public let y: String
+    let y: String
 
     /// Initializes a JWK containing an EC public key.
     ///
@@ -130,7 +130,7 @@ public struct ECPublicKey: JWK {
     ///   - y: The y coordinate for the EC public key in `base64urlUInt` encoding
     ///        as specified in [RFC-7518, Section 2](https://tools.ietf.org/html/rfc7518#section-2).
     ///   - parameters: Additional JWK parameters.
-    public init(crv: ECCurveType, x: String, y: String, additionalParameters parameters: [String: String] = [:]) {
+    init(crv: ECCurveType, x: String, y: String, additionalParameters parameters: [String: String] = [:]) {
         self.keyType = .EC
         self.crv = crv
         self.x = x
@@ -153,7 +153,7 @@ public struct ECPublicKey: JWK {
     ///   - publicKey: The public key that the resulting JWK should represent.
     ///   - parameters: Any additional parameters to be contained in the JWK.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public init(publicKey: ExpressibleAsECPublicKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
+    init(publicKey: ExpressibleAsECPublicKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
         guard let components = try? publicKey.ecPublicKeyComponents() else {
             throw JOSESwiftError.couldNotConstructJWK
         }
@@ -173,7 +173,7 @@ public struct ECPublicKey: JWK {
         )
     }
 
-    public init(data: Data) throws {
+    init(data: Data) throws {
         self = try JSONDecoder().decode(ECPublicKey.self, from: data)
     }
 
@@ -186,7 +186,7 @@ public struct ECPublicKey: JWK {
     /// - Parameter type: The type to convert the JWK to.
     /// - Returns: The type initialized with the key data.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsECPublicKeyComponents {
+    func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsECPublicKeyComponents {
         guard let x = Data(base64URLEncoded: self.x) else {
             throw JOSESwiftError.xNotBase64URLUIntEncoded
         }
@@ -199,7 +199,7 @@ public struct ECPublicKey: JWK {
     }
 
     @available(iOS 11.0, *)
-    public func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
+    func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
         let keyId = try thumbprint(algorithm: algorithm)
         return .init(crv: crv, x: x, y: y, additionalParameters: parameters.merging([
             JWKParameter.keyIdentifier.rawValue: keyId
@@ -210,15 +210,15 @@ public struct ECPublicKey: JWK {
 // MARK: Private Key
 
 /// A JWK holding an EC private key.
-public struct ECPrivateKey: JWK {
+struct ECPrivateKey: JWK {
     /// The JWK key type.
-    public let keyType: JWKKeyType
+    let keyType: JWKKeyType
 
     /// The JWK parameters.
-    public let parameters: [String: String]
+    let parameters: [String: String]
 
     /// The EC private key required parameters
-    public var requiredParameters: [String: String] {
+    var requiredParameters: [String: String] {
         [
             JWKParameter.keyType.rawValue: self.keyType.rawValue,
             ECParameter.curve.rawValue: self.crv.rawValue,
@@ -228,16 +228,16 @@ public struct ECPrivateKey: JWK {
     }
 
     /// The curve value for the EC public key.
-    public let crv: ECCurveType
+    let crv: ECCurveType
 
     /// The x coordinate value for the EC public key.
-    public let x: String
+    let x: String
 
     /// The y coordinate value for the EC public key.
-    public let y: String
+    let y: String
 
     /// The private exponent value for the EC private key.
-    public let privateKey: String
+    let privateKey: String
 
     /// Initializes a JWK containing an EC private key.
     ///
@@ -254,7 +254,7 @@ public struct ECPrivateKey: JWK {
     ///   - privateKey: The private key component for the EC public key in `base64urlUInt` encoding
     ///                 as specified in [RFC-7518, Section 2](https://tools.ietf.org/html/rfc7518#section-2).
     ///   - parameters: Additional JWK parameters.
-    public init(crv: String, x: String, y: String, privateKey: String, additionalParameters parameters: [String: String] = [:]) throws {
+    init(crv: String, x: String, y: String, privateKey: String, additionalParameters parameters: [String: String] = [:]) throws {
         self.keyType = .EC
 
         guard let curve = ECCurveType(rawValue: crv) else {
@@ -284,7 +284,7 @@ public struct ECPrivateKey: JWK {
     ///   - privateKey: The private key that the resulting JWK should represent.
     ///   - parameters: Any additional parameters to be contained in the JWK.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public init(privateKey: ExpressibleAsECPrivateKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
+    init(privateKey: ExpressibleAsECPrivateKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
         guard let (crv, x, y, privateKey) = try? privateKey.ecPrivateKeyComponents() else {
             throw JOSESwiftError.couldNotConstructJWK
         }
@@ -301,7 +301,7 @@ public struct ECPrivateKey: JWK {
         )
     }
 
-    public init(data: Data) throws {
+    init(data: Data) throws {
         self = try JSONDecoder().decode(ECPrivateKey.self, from: data)
     }
 
@@ -314,7 +314,7 @@ public struct ECPrivateKey: JWK {
     /// - Parameter type: The type to convert the JWK to.
     /// - Returns: The type initialized with the key data.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsECPrivateKeyComponents {
+    func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsECPrivateKeyComponents {
         guard let x = Data(base64URLEncoded: self.x) else {
             throw JOSESwiftError.xNotBase64URLUIntEncoded
         }
@@ -331,7 +331,7 @@ public struct ECPrivateKey: JWK {
     }
 
     @available(iOS 11.0, *)
-    public func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
+    func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
         let keyId = try thumbprint(algorithm: algorithm)
         return try .init(crv: crv.rawValue, x: x, y: y, privateKey: privateKey, additionalParameters: parameters.merging([
             JWKParameter.keyIdentifier.rawValue: keyId
@@ -341,4 +341,4 @@ public struct ECPrivateKey: JWK {
 
 // MARK: Key Pair
 
-public typealias ECKeyPair = ECPrivateKey
+typealias ECKeyPair = ECPrivateKey

@@ -35,29 +35,29 @@ internal enum JWEError: Error {
 /// All representations of the JWE or it's parts like it's compact serialization or the plaintext can be derived from those five parameters.
 /// Therefore (and to keep immutability) it does not cache such representations.
 /// As discussed, it is the responsibility of the framework user to cache e.g. the plaintext. Of course this will have to be communicated clearly.
-public struct JWE {
+struct JWE {
     /// The JWE's JOSE Header.
-    public let header: JWEHeader
+    let header: JWEHeader
 
     /// The encrypted content encryption key (CEK).
-    public let encryptedKey: Data
+    let encryptedKey: Data
 
     /// The initialization value used when encrypting the plaintext.
-    public let initializationVector: Data
+    let initializationVector: Data
 
     /// The ciphertext resulting from authenticated encryption of the plaintext.
-    public let ciphertext: Data
+    let ciphertext: Data
 
     /// The output of an authenticated encryption with associated data that ensures the integrity of the ciphertext and the additional associeated data.
-    public let authenticationTag: Data
+    let authenticationTag: Data
 
     /// The compact serialization of this JWE object as string.
-    public var compactSerializedString: String {
+    var compactSerializedString: String {
         return JOSESerializer().serialize(compact: self)
     }
 
     /// The compact serialization of this JWE object as data.
-    public var compactSerializedData: Data {
+    var compactSerializedData: Data {
         // Force unwrapping is ok here, since `serialize` returns a string generated from data.
         // swiftlint:disable:next force_unwrapping
         return JOSESerializer().serialize(compact: self).data(using: .utf8)!
@@ -70,7 +70,7 @@ public struct JWE {
     ///   - payload: A fully initialized `Payload`.
     ///   - encrypter: The `Encrypter` used to encrypt the JWE from the header and payload.
     /// - Throws: `JOSESwiftError` if any error occurs while encrypting.
-    public init<KeyType>(header: JWEHeader, payload: Payload, encrypter: Encrypter<KeyType>) throws {
+    init<KeyType>(header: JWEHeader, payload: Payload, encrypter: Encrypter<KeyType>) throws {
         self.header = header
 
         var encryptionContext: Encrypter<KeyType>.EncryptionContext
@@ -101,7 +101,7 @@ public struct JWE {
     ///         If the component is not a valid base64URL string.
     ///     - `JOSESwiftError.componentCouldNotBeInitializedFromData(data: Data)`:
     ///         If a component cannot be initialized from its data object.
-    public init(compactSerialization: String) throws {
+    init(compactSerialization: String) throws {
         self = try JOSEDeserializer().deserialize(JWE.self, fromCompactSerialization: compactSerialization)
     }
 
@@ -118,7 +118,7 @@ public struct JWE {
     ///         If the component is not a valid base64URL string.
     ///     - `JOSESwiftError.componentCouldNotBeInitializedFromData(data: Data)`:
     ///         If a component cannot be initialized from its data object.
-    public init(compactSerialization: Data) throws {
+    init(compactSerialization: Data) throws {
         guard let compactSerializationString = String(data: compactSerialization, encoding: .utf8) else {
             throw JOSESwiftError.wrongDataEncoding(data: compactSerialization)
         }
@@ -142,7 +142,7 @@ public struct JWE {
     /// - Returns: The decrypted payload of the JWE.
     /// - Throws: A `JOSESwiftError` indicating any errors.
     @available(*, deprecated, message: "Use `decrypt(using decrypter:)` instead")
-    public func decrypt<KeyType>(with key: KeyType) throws -> Payload {
+    func decrypt<KeyType>(with key: KeyType) throws -> Payload {
         let context = Decrypter.DecryptionContext(
             protectedHeader: header,
             encryptedKey: encryptedKey,
@@ -178,7 +178,7 @@ public struct JWE {
     /// - Parameter decrypter: The decrypter to decrypt the JWE with.
     /// - Returns: The decrypted payload of the JWE.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public func decrypt(using decrypter: Decrypter) throws -> Payload {
+    func decrypt(using decrypter: Decrypter) throws -> Payload {
         let context = Decrypter.DecryptionContext(
             protectedHeader: header,
             encryptedKey: encryptedKey,
@@ -210,7 +210,7 @@ public struct JWE {
 
 /// Serialize the JWE to a given compact serializer.
 extension JWE: CompactSerializable {
-    public func serialize(to serializer: inout CompactSerializer) {
+    func serialize(to serializer: inout CompactSerializer) {
         serializer.serialize(header)
         serializer.serialize(encryptedKey)
         serializer.serialize(initializationVector)
@@ -225,7 +225,7 @@ extension JWE: CompactDeserializable {
         return 5
     }
 
-    public init (from deserializer: CompactDeserializer) throws {
+    init (from deserializer: CompactDeserializer) throws {
         let header = try deserializer.deserialize(JWEHeader.self, at: ComponentCompactSerializedIndex.jweHeaderIndex)
         let encryptedKey = try deserializer.deserialize(Data.self, at: ComponentCompactSerializedIndex.jweEncryptedKeyIndex)
         let initializationVector = try deserializer.deserialize(Data.self, at: ComponentCompactSerializedIndex.jweInitializationVectorIndex)

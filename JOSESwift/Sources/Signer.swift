@@ -35,7 +35,7 @@ protocol SignerProtocol {
     func sign(_ signingInput: Data) throws -> Data
 }
 
-public struct Signer<KeyType> {
+struct Signer<KeyType> {
     let signer: SignerProtocol
 
     /// Constructs a signer used to sign a JWS.
@@ -49,7 +49,7 @@ public struct Signer<KeyType> {
     ///     - For _MAC algorithms_ it is the secret symmetric key (`Data`)
     ///       shared between the sender and the recipient.
     /// - Returns: A fully initialized `Signer` or `nil` if provided key is of the wrong type.
-    public init?(signingAlgorithm: SignatureAlgorithm, key: KeyType) {
+    init?(signingAlgorithm: SignatureAlgorithm, key: KeyType) {
         switch signingAlgorithm {
         case .HS256, .HS384, .HS512:
             guard type(of: key) is HMACSigner.KeyType.Type else {
@@ -99,7 +99,7 @@ extension Array where Element == DataConvertible {
 
 extension Signer {
     @available(*, deprecated, message: "Use `init?(signingAlgorithm: SignatureAlgorithm, key: KeyType)` instead")
-    public init?(signingAlgorithm: SignatureAlgorithm, privateKey: KeyType) {
+    init?(signingAlgorithm: SignatureAlgorithm, privateKey: KeyType) {
         self.init(signingAlgorithm: signingAlgorithm, key: privateKey)
     }
 }

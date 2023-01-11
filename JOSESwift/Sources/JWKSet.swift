@@ -24,15 +24,15 @@
 import Foundation
 
 /// A JWK set is a structure that represents a set of JWKs.
-public struct JWKSet {
+struct JWKSet {
 
     /// The `keys` member is an array of JWKs.
-    public let keys: [JWK]
+    let keys: [JWK]
 
     /// Initializes a `JWKSet` containing the given keys.
     ///
     /// - Parameter keys: The keys that the JWK set should contain.
-    public init(keys: [JWK]) {
+    init(keys: [JWK]) {
         self.keys = keys
     }
 
@@ -40,7 +40,7 @@ public struct JWKSet {
     ///
     /// - Parameter data: The data containing the JWK set.
     /// - Throws: A `DecodingError` with relevant information.
-    public init(data: Data) throws {
+    init(data: Data) throws {
         self = try JSONDecoder().decode(JWKSet.self, from: data)
     }
 
@@ -48,7 +48,7 @@ public struct JWKSet {
     ///
     /// - Returns: The JSON representation of the JWK set as `String` or
     ///            `nil` if the encoding failed.
-    public func jsonString() -> String? {
+    func jsonString() -> String? {
         guard let json = try? JSONEncoder().encode(self) else {
             return nil
         }
@@ -60,23 +60,23 @@ public struct JWKSet {
     ///
     /// - Returns: The JSON representation of the JWK set as `Data` or
     ///            `nil` if the encoding failed.
-    public func jsonData() -> Data? {
+    func jsonData() -> Data? {
         return try? JSONEncoder().encode(self)
     }
 }
 
 extension JWKSet: Collection {
-    public typealias ArrayType = [JWK]
+    typealias ArrayType = [JWK]
 
-    public typealias Element = ArrayType.Element
-    public typealias Index = ArrayType.Index
-    public typealias Iterator = ArrayType.Iterator
+    typealias Element = ArrayType.Element
+    typealias Index = ArrayType.Index
+    typealias Iterator = ArrayType.Iterator
 
-    public var startIndex: Index {
+    var startIndex: Index {
         return self.keys.startIndex
     }
 
-    public var endIndex: Index {
+    var endIndex: Index {
         return self.keys.endIndex
     }
 
@@ -84,19 +84,19 @@ extension JWKSet: Collection {
         return keys[index]
     }
 
-    public func index(after index: Index) -> Index {
+    func index(after index: Index) -> Index {
         return self.keys.index(after: index)
     }
 
-    public func makeIterator() -> IndexingIterator<ArrayType> {
+    func makeIterator() -> IndexingIterator<ArrayType> {
         return self.keys.makeIterator()
     }
 }
 
 extension JWKSet: ExpressibleByArrayLiteral {
-    public typealias ArrayLiteralElement = Element
+    typealias ArrayLiteralElement = Element
 
-    public init(arrayLiteral elements: ArrayLiteralElement...) {
+    init(arrayLiteral elements: ArrayLiteralElement...) {
         var keys: [Element] = []
         for element in elements {
             keys.append(element)

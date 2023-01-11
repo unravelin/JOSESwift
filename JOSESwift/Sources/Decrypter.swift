@@ -23,7 +23,7 @@
 
 import Foundation
 
-public struct Decrypter {
+struct Decrypter {
     private let keyManagementMode: DecryptionKeyManagementMode
 
     let keyManagementAlgorithm: KeyManagementAlgorithm
@@ -39,7 +39,7 @@ public struct Decrypter {
     ///     - For _key encryption_ it is the private key (`SecKey`) of the recipient to which the JWE was encrypted.
     ///     - For _direct encryption_ it is the secret symmetric key (`Data`) shared between the sender and the
     ///       recipient.
-    public init?<KeyType>(
+    init?<KeyType>(
         keyManagementAlgorithm: KeyManagementAlgorithm,
         contentEncryptionAlgorithm: ContentEncryptionAlgorithm,
         decryptionKey: KeyType
@@ -94,18 +94,18 @@ extension Decrypter {
 
 extension Decrypter {
     @available(*, deprecated, message: "Use `init?(keyManagementAlgorithm:contentEncryptionAlgorithm:decryptionKey:)` instead")
-    public init?<KeyType>(keyDecryptionAlgorithm: AsymmetricKeyAlgorithm, decryptionKey key: KeyType, contentDecryptionAlgorithm: SymmetricKeyAlgorithm) {
+    init?<KeyType>(keyDecryptionAlgorithm: AsymmetricKeyAlgorithm, decryptionKey key: KeyType, contentDecryptionAlgorithm: SymmetricKeyAlgorithm) {
         self.init(keyManagementAlgorithm: keyDecryptionAlgorithm, contentEncryptionAlgorithm: contentDecryptionAlgorithm, decryptionKey: key)
     }
 
     @available(*, deprecated, message: "Use `init?(keyManagementAlgorithm:contentEncryptionAlgorithm:decryptionKey:)` instead")
-    public init?<KeyType>(keyDecryptionAlgorithm: AsymmetricKeyAlgorithm, keyDecryptionKey kdk: KeyType, contentDecryptionAlgorithm: SymmetricKeyAlgorithm) {
+    init?<KeyType>(keyDecryptionAlgorithm: AsymmetricKeyAlgorithm, keyDecryptionKey kdk: KeyType, contentDecryptionAlgorithm: SymmetricKeyAlgorithm) {
         self.init(keyDecryptionAlgorithm: keyDecryptionAlgorithm, decryptionKey: kdk, contentDecryptionAlgorithm: contentDecryptionAlgorithm)
     }
 }
 
 @available(*, deprecated, message: "This type will be removed with the next major release.")
-public struct DecryptionContext {
+struct DecryptionContext {
     let header: JWEHeader
     let encryptedKey: Data
     let initializationVector: Data
@@ -114,7 +114,7 @@ public struct DecryptionContext {
 }
 
 @available(*, deprecated, message: "This type will be removed with the next major release.")
-public struct SymmetricDecryptionContext {
+struct SymmetricDecryptionContext {
     let ciphertext: Data
     let initializationVector: Data
     let additionalAuthenticatedData: Data

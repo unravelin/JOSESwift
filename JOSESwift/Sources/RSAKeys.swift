@@ -31,7 +31,7 @@ import Foundation
 /// - Note:
 /// To ensure proper JWK JSON encoding, the component data must refer to the unsigned big-endian octet representation
 /// of the component's values, encoded using the minimum amount of octets needed to represent the value.
-public typealias RSAPublicKeyComponents = (
+typealias RSAPublicKeyComponents = (
     modulus: Data,
     exponent: Data
 )
@@ -42,7 +42,7 @@ public typealias RSAPublicKeyComponents = (
 /// - Note:
 /// To ensure proper JWK JSON encoding, the component data must refer to the unsigned big-endian octet representation
 /// of the component's values, encoded using the minimum amount of octets needed to represent the value.
-public typealias RSAPrivateKeyComponents = (
+typealias RSAPrivateKeyComponents = (
     modulus: Data,
     exponent: Data,
     privateExponent: Data
@@ -51,7 +51,7 @@ public typealias RSAPrivateKeyComponents = (
 /// A type that represents an RSA public key.
 /// It can be expressed through `RSAPublicKeyComponents` meaning it can be converted to such components
 /// and it can be created from such components.
-public protocol ExpressibleAsRSAPublicKeyComponents {
+protocol ExpressibleAsRSAPublicKeyComponents {
 
     /// Creates an object that contains the supplied components in the format specified by PKCS#1.
     ///
@@ -70,7 +70,7 @@ public protocol ExpressibleAsRSAPublicKeyComponents {
 /// A type that represents an RSA private key.
 /// It can be expressed through `RSAPrivateKeyComponents` meaning it can be converted to such components
 /// and it can be created from such components.
-public protocol ExpressibleAsRSAPrivateKeyComponents {
+protocol ExpressibleAsRSAPrivateKeyComponents {
 
     /// Creates an object that contains the supplied components in the format specified by PKCS#1.
     ///
@@ -89,15 +89,15 @@ public protocol ExpressibleAsRSAPrivateKeyComponents {
 // MARK: Public Key
 
 /// A JWK holding an RSA pubkic key.
-public struct RSAPublicKey: JWK {
+struct RSAPublicKey: JWK {
     /// The JWK key type.
-    public let keyType: JWKKeyType
+    let keyType: JWKKeyType
 
     /// The JWK parameters.
-    public let parameters: [String: String]
+    let parameters: [String: String]
 
     /// The RSA required parameters
-    public var requiredParameters: [String: String] {
+    var requiredParameters: [String: String] {
         [
             JWKParameter.keyType.rawValue: self.keyType.rawValue,
             RSAParameter.modulus.rawValue: self.modulus,
@@ -106,10 +106,10 @@ public struct RSAPublicKey: JWK {
     }
 
     /// The modulus value for the RSA public key.
-    public let modulus: String
+    let modulus: String
 
     /// The exponent value for the RSA public key.
-    public let exponent: String
+    let exponent: String
 
     /// Initializes a JWK containing an RSA public key.
     ///
@@ -122,7 +122,7 @@ public struct RSAPublicKey: JWK {
     ///   - exponent: The public exponent value for the RSA public key in `base64urlUInt` encoding
     ///               as specified in [RFC-7518, Section 2](https://tools.ietf.org/html/rfc7518#section-2).
     ///   - parameters: Additional JWK parameters.
-    public init(modulus: String, exponent: String, additionalParameters parameters: [String: String] = [:]) {
+    init(modulus: String, exponent: String, additionalParameters parameters: [String: String] = [:]) {
         self.keyType = .RSA
         self.modulus = modulus
         self.exponent = exponent
@@ -143,7 +143,7 @@ public struct RSAPublicKey: JWK {
     ///   - publicKey: The public key that the resulting JWK should represent.
     ///   - parameters: Any additional parameters to be contained in the JWK.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public init(publicKey: ExpressibleAsRSAPublicKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
+    init(publicKey: ExpressibleAsRSAPublicKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
         guard let components = try? publicKey.rsaPublicKeyComponents() else {
             throw JOSESwiftError.couldNotConstructJWK
         }
@@ -159,7 +159,7 @@ public struct RSAPublicKey: JWK {
     }
 
     /// Creates an `RSAPublicKey` from the JSON representation of a public key JWK.
-    public init(data: Data) throws {
+    init(data: Data) throws {
         self = try JSONDecoder().decode(RSAPublicKey.self, from: data)
     }
 
@@ -172,7 +172,7 @@ public struct RSAPublicKey: JWK {
     /// - Parameter type: The type to convert the JWK to.
     /// - Returns: The type initialized with the key data.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsRSAPublicKeyComponents {
+    func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsRSAPublicKeyComponents {
         guard let modulusData = Data(base64URLEncoded: self.modulus) else {
             throw JOSESwiftError.modulusNotBase64URLUIntEncoded
         }
@@ -185,7 +185,7 @@ public struct RSAPublicKey: JWK {
     }
 
     @available(iOS 11.0, *)
-    public func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
+    func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
         let keyId = try thumbprint(algorithm: algorithm)
         return .init(modulus: modulus, exponent: exponent, additionalParameters: parameters.merging([
             JWKParameter.keyIdentifier.rawValue: keyId
@@ -196,15 +196,15 @@ public struct RSAPublicKey: JWK {
 // MARK: Private Key
 
 /// A JWK holding an RSA private key.
-public struct RSAPrivateKey: JWK {
+struct RSAPrivateKey: JWK {
     /// The JWK key type.
-    public let keyType: JWKKeyType
+    let keyType: JWKKeyType
 
     /// The JWK parameters.
-    public let parameters: [String: String]
+    let parameters: [String: String]
 
     /// The RSA required parameters
-    public var requiredParameters: [String: String] {
+    var requiredParameters: [String: String] {
         [
             JWKParameter.keyType.rawValue: self.keyType.rawValue,
             RSAParameter.modulus.rawValue: self.modulus,
@@ -213,13 +213,13 @@ public struct RSAPrivateKey: JWK {
     }
 
     /// The modulus value for the RSA private key.
-    public let modulus: String
+    let modulus: String
 
     /// The exponent value for the RSA private key.
-    public let exponent: String
+    let exponent: String
 
     /// The private exponent value for the RSA private key.
-    public let privateExponent: String
+    let privateExponent: String
 
     /// Initializes a JWK containing an RSA private key.
     ///
@@ -231,7 +231,7 @@ public struct RSAPrivateKey: JWK {
     //    - privateExponent: The private exponent value for the RSA private key in `base64urlUInt` encoding
     ///               as specified in [RFC-7518, Section 2](https://tools.ietf.org/html/rfc7518#section-2).
     ///   - parameters: Additional JWK parameters.
-    public init(modulus: String, exponent: String, privateExponent: String, additionalParameters parameters: [String: String] = [:]) {
+    init(modulus: String, exponent: String, privateExponent: String, additionalParameters parameters: [String: String] = [:]) {
         self.keyType = .RSA
         self.modulus = modulus
         self.exponent = exponent
@@ -254,7 +254,7 @@ public struct RSAPrivateKey: JWK {
     ///   - privateKey: The private key that the resulting JWK should represent.
     ///   - parameters: Any additional parameters to be contained in the JWK.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public init(privateKey: ExpressibleAsRSAPrivateKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
+    init(privateKey: ExpressibleAsRSAPrivateKeyComponents, additionalParameters parameters: [String: String] = [:]) throws {
         guard let (modulus, exponent, privateExponent) = try? privateKey.rsaPrivateKeyComponents() else {
             throw JOSESwiftError.couldNotConstructJWK
         }
@@ -271,7 +271,7 @@ public struct RSAPrivateKey: JWK {
     }
 
     /// Creates an `RSAPrivateKey` from the JSON representation of a private key JWK.
-    public init(data: Data) throws {
+    init(data: Data) throws {
         self = try JSONDecoder().decode(RSAPrivateKey.self, from: data)
     }
 
@@ -284,7 +284,7 @@ public struct RSAPrivateKey: JWK {
     /// - Parameter type: The type to convert the JWK to.
     /// - Returns: The type initialized with the key data.
     /// - Throws: A `JOSESwiftError` indicating any errors.
-    public func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsRSAPrivateKeyComponents {
+    func converted<T>(to type: T.Type) throws -> T where T: ExpressibleAsRSAPrivateKeyComponents {
         guard let modulusData = Data(base64URLEncoded: self.modulus) else {
             throw JOSESwiftError.modulusNotBase64URLUIntEncoded
         }
@@ -301,7 +301,7 @@ public struct RSAPrivateKey: JWK {
     }
 
     @available(iOS 11.0, *)
-    public func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
+    func withThumbprintAsKeyId(algorithm: JWKThumbprintAlgorithm = .SHA256) throws -> Self {
         let keyId = try thumbprint(algorithm: algorithm)
         return .init(modulus: modulus, exponent: exponent, privateExponent: privateExponent, additionalParameters: parameters.merging([
             JWKParameter.keyIdentifier.rawValue: keyId
@@ -311,4 +311,4 @@ public struct RSAPrivateKey: JWK {
 
 // MARK: Key Pair
 
-public typealias RSAKeyPair = RSAPrivateKey
+typealias RSAKeyPair = RSAPrivateKey

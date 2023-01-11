@@ -37,7 +37,7 @@ protocol VerifierProtocol {
     func verify(_ signingInput: Data, against signature: Data) throws -> Bool
 }
 
-public struct Verifier {
+struct Verifier {
     let verifier: VerifierProtocol
 
     /// Constructs a verifyer used to verify a JWS.
@@ -51,7 +51,7 @@ public struct Verifier {
     ///     - For _MAC algorithms_ it is the secret symmetric key (`Data`)
     ///       shared between the sender and the recipient.
     /// - Returns: A fully initialized `Verifier` or `nil` if provided key is of the wrong type.
-    public init?<KeyType>(verifyingAlgorithm: SignatureAlgorithm, key: KeyType) {
+    init?<KeyType>(verifyingAlgorithm: SignatureAlgorithm, key: KeyType) {
         switch verifyingAlgorithm {
         case .HS256, .HS384, .HS512:
             guard type(of: key) is HMACVerifier.KeyType.Type else {
@@ -90,7 +90,7 @@ public struct Verifier {
 
 extension Verifier {
     @available(*, deprecated, message: "Use `init?(verifyingAlgorithm: SignatureAlgorithm, key: KeyType)` instead")
-    public init?<KeyType>(verifyingAlgorithm: SignatureAlgorithm, publicKey: KeyType) {
+    init?<KeyType>(verifyingAlgorithm: SignatureAlgorithm, publicKey: KeyType) {
         self.init(verifyingAlgorithm: verifyingAlgorithm, key: publicKey)
     }
 }

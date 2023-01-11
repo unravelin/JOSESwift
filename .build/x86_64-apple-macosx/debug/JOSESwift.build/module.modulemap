@@ -1,0 +1,4 @@
+module JOSESwift {
+    header "/Users/markbrightman/Development/SDK/JOSESwift/.build/x86_64-apple-macosx/debug/JOSESwift.build/JOSESwift-Swift.h"
+    requires objc
+}

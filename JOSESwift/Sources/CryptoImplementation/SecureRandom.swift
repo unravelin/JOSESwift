@@ -24,18 +24,18 @@
 import Foundation
 import Security
 
-public enum SecureRandomError: Error {
+enum SecureRandomError: Error {
     case failed(status: OSStatus)
     case countMustBeGreaterThanZero
 }
 
-public struct SecureRandom {
+struct SecureRandom {
     /// Generates secure random data with a given count.
     ///
     /// - Parameter count: The count of the random generated data. Must be greater than 0.
     /// - Returns: The random generated data.
     /// - Throws: `SecureRandomError` if any error occurs during generation of secure random bytes. 
-    public static func generate(count: Int) throws -> Data {
+    static func generate(count: Int) throws -> Data {
         guard count > 0 else {
             throw SecureRandomError.countMustBeGreaterThanZero
         }

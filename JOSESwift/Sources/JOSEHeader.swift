@@ -42,7 +42,7 @@ protocol JOSEHeader: DataConvertible, CommonHeaderParameterSpace {
 
 // `DataConvertible` implementation.
 extension JOSEHeader {
-    public init?(_ data: Data) {
+    init?(_ data: Data) {
         // Verify that the header is a completely valid JSON object.
         guard
             let json = try? JSONSerialization.jsonObject(with: data, options: []),
@@ -54,14 +54,14 @@ extension JOSEHeader {
         try? self.init(parameters: parameters, headerData: data)
     }
 
-    public func data() -> Data {
+    func data() -> Data {
         return headerData
     }
 }
 
 /// JWS and JWE share a common Header Parameter space that both JWS and JWE headers must support.
 /// Those header parameters may have a different meaning depending on whether they are part of a JWE or JWS.
-public protocol CommonHeaderParameterSpace {
+protocol CommonHeaderParameterSpace {
     var jku: URL? { get set }
     var jwk: String? { get set }
     var jwkTyped: JWK? { get set }
